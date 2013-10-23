@@ -98,12 +98,25 @@ public class PieceDrop : MonoBehaviour {
 		Debug.Log ("YO ITS TIME TO CLEAR OUT ROW: " + row);
 		//apply force to the row in question
 		GameObject[] clearBlocks = GameObject.FindGameObjectsWithTag (row);
-		foreach (GameObject pushBlock in clearBlocks ){
-			Rigidbody gameObjectsRigidBody = pushBlock.AddComponent<Rigidbody>();
-			pushBlock.rigidbody.AddForce (0,0,-10);
+		foreach (GameObject clearBlock in clearBlocks ){
+			Vector3 pew = new Vector3(UnityEngine.Random.value * 100,UnityEngine.Random.value * 100,UnityEngine.Random.value * 100); // Generate some random data for us to launch each block with
+			//Vector3 rot = new Vector3(UnityEngine.Random.rotation);
+			clearBlock.transform.Translate(0,0,-2); // move them clear of remaining blocks
+			Rigidbody gameObjectsRigidBody = clearBlock.AddComponent<Rigidbody>(); // make them rigidbodies
+			clearBlock.rigidbody.AddForce (pew); // explode them out
+			clearBlock.rigidbody.AddTorque (pew); // and spin them right round baby right round
 		}
 		
-		//foreach
+		for (int i = Convert.ToInt32(row)+1; i<21; i++){ // for each remaining row of blocks above the cleared one
+			string iTag = i.ToString();
+			Debug.Log ("im totally about to move row " +row+" down a tad.  This be objects with the tag " +iTag);
+			GameObject[] moveBlocks = GameObject.FindGameObjectsWithTag (iTag);	// create an array containing each block on that row
+			foreach (GameObject moveBlock in moveBlocks) {
+				moveBlock.transform.Translate (0,-1,0);	// and move each block down 1 position
+			}
+			//MainLoop.rows[i] = MainLoop.rows[i-1]; //update the count of tiles on each row to the one of that above it in the array
+		}
+			
 		
 		
 		foreach (GameObject pushBlock in clearBlocks ){
