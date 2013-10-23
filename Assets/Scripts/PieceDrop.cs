@@ -1,8 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
-using System; // needed for Array.Clear
+using System; // needed for Convert
 
 public class PieceDrop : MonoBehaviour {
+	
+/* Handles most of our game logic as it applies to our activePiece.  Forces the descent of our block and uses a raycast to identify where it stops. 
+ * Fixed values in the left/right movement statement prevent going outside the bounds of the frame.
+ * Upon hitting the ground or another fixedBlock the activeBlock is deleted and the SpawnFixedBlock method is called.
+ */
 	
 	public float gameSpeed = 10f;
 	public GameObject fixedBlock;
@@ -17,19 +22,12 @@ public class PieceDrop : MonoBehaviour {
 	RaycastHit hit;
 	RaycastHit spotHit;
 	
-	// Use this for initialization
 	void Start () {
 		//position = transform.position;
 	}
 	
-	// Update is called once per frame
 	void Update () {
-		
-		//Quit:
-		if (Input.GetKeyDown ("escape")) {
-			Application.LoadLevel ("Menu");
-		}
-		
+			
 		float x = whereToMove.x;
 		float y = whereToMove.y;
 		
@@ -71,6 +69,11 @@ public class PieceDrop : MonoBehaviour {
 	}
 		
 	void SpawnFixedBlock () {
+		/* Tidy up the coordinates to whole numbers and create a fixedBlock in the grid.
+		 * Check to see if the new block completes a line and if so, call the ClearRow method.
+		 * Check to see if our new block is in the 21st row thus ending the game.
+		 * Initiate the spawning of the next activeBlock
+		 */
 		float x = transform.position.x;
 		float y = Mathf.Round(transform.position.y); // lock new y transform to our "grid"
 		int numY = System.Convert.ToInt32(y);
@@ -89,12 +92,15 @@ public class PieceDrop : MonoBehaviour {
 			MainLoop.rows[numY] = 0; // and reset the block count for that row to 0 in our array
 		}
 		if(MainLoop.rows[20] > 0) {
-			GameOver();
+			MainLoop.GameOver();
 		}
 		dropComplete = true; // spawn the next piece
 	}
 	
 	void ClearRow(string row){
+		/* Clears out the completed row by identifying all the fixedBlocks with the appropriate tag, moving them a safe distance away from the grid so they can move freely then applying randomized forces to them for an explosion effect.
+		 * Check remaining rows to move remaining blocks downwards and update the row count array accordingly.
+		 */
 		Debug.Log ("YO ITS TIME TO CLEAR OUT ROW: " + row);
 		//apply force to the row in question
 		GameObject[] clearBlocks = GameObject.FindGameObjectsWithTag (row);
@@ -106,25 +112,23 @@ public class PieceDrop : MonoBehaviour {
 			clearBlock.rigidbody.AddForce (pew); // explode them out
 			clearBlock.rigidbody.AddTorque (pew); // and spin them right round baby right round
 		}
-		
+
 		for (int i = Convert.ToInt32(row)+1; i<21; i++){ // for each remaining row of blocks above the cleared one
 			string iTag = i.ToString();
-			Debug.Log ("im totally about to move row " +row+" down a tad.  This be objects with the tag " +iTag);
+			//Debug.Log ("im totally about to move row "+i+" down a tad.  This be objects with the tag " +iTag);
 			GameObject[] moveBlocks = GameObject.FindGameObjectsWithTag (iTag);	// create an array containing each block on that row
 			foreach (GameObject moveBlock in moveBlocks) {
 				moveBlock.transform.Translate (0,-1,0);	// and move each block down 1 position
+				string newTag = (i-1).ToString ();
+				moveBlock.tag = newTag;
 			}
-			//MainLoop.rows[i] = MainLoop.rows[i-1]; //update the count of tiles on each row to the one of that above it in the array
+			int originalRow = i - 1;
+			Debug.Log ("about to check to see if there's blocks on row "+i+" and there are "+MainLoop.rows[i]);
+			if (MainLoop.rows[i] > 0) { // if there are any blocks on the row above the one I've cleared
+				Debug.Log ("i = " + i + " and im correcting row: " + originalRow + " there were " + MainLoop.rows[i] + " blocks on the row above me before");
+				MainLoop.rows[i] = MainLoop.rows[originalRow]; //update the count of tiles on each row to the one of that above it in the array
+				Debug.Log ("and there's " + MainLoop.rows[i]+" now.");
+			}
 		}
-			
-		
-		
-		foreach (GameObject pushBlock in clearBlocks ){
-			//pushBlock.rigidbody.AddTorque (3,3,3);
-		}
-	}
-	void GameOver() {
-		Array.Clear(MainLoop.rows, 0, MainLoop.rows.Length); // clear array values so they're empty for next game
-		Application.LoadLevel ("Menu");	
 	}
 }
