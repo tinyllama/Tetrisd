@@ -10,11 +10,14 @@ public class MainLoop : MonoBehaviour {
  */
 	
 public GameObject activePiece;
+static GameObject scoreboard;
 Vector3 startPosition = new Vector2(5,22); // where new pieces spawn
+static int score = 0;
 public static int[] rows = new int[23];
 
 	void Start () {
 		Instantiate(activePiece,startPosition,Quaternion.identity);
+		scoreboard = GameObject.Find("Score");
 	}
 	
 	void Update () {
@@ -34,7 +37,7 @@ public static int[] rows = new int[23];
 		}
 		//Quit:
 		if (Input.GetKeyDown ("escape")) {
-			Application.LoadLevel ("Menu");
+			GameOver ();
 		}
 		
 	}
@@ -43,5 +46,10 @@ public static int[] rows = new int[23];
 		 */
 		Array.Clear(rows, 0, rows.Length);
 		Application.LoadLevel ("Menu");	
+	}
+	
+	public static void UpdateScore() {
+		score++;
+		scoreboard.guiText.text = score.ToString();
 	}
 }
