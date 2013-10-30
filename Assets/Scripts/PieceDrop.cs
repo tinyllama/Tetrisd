@@ -46,12 +46,15 @@ public class PieceDrop : MonoBehaviour {
 		else {
 			y = -gameSpeed * Time.deltaTime;
 		}
-		
-		if (Physics.Raycast (ray,out hit)) { // needs refinement, doesn't work at higher speeds (can drop block on row above
-			float distance = Vector2.Distance (ray.origin, hit.point);
-			if(distance - 0.5 <= -y) {
-				SpawnFixedBlock();
-				Destroy(this.gameObject);
+		if (MainLoop.groundHit == false) {
+			if (Physics.Raycast (ray,out hit)) { // needs refinement, doesn't work at higher speeds (can drop block on row above
+				float distance = Vector2.Distance (ray.origin, hit.point);
+				if(distance - 0.5 <= -y && hit.collider.gameObject.tag == "Finish") {
+					Debug.Log("we can has collision with"+hit.collider.gameObject.tag);
+					MainLoop.groundHit = true;
+					SpawnFixedBlock();
+					Destroy(this.gameObject);
+				}
 			}
 		}
 		
