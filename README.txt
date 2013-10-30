@@ -1,8 +1,16 @@
-Media Design School Portfolio Submission
-Dylan West - dylanwest@gmail.com
+Tiny Llama - info@tinyllama.net
 24/10/2013
 
-Tetris'd (version 0.0004)
+
+version0.0005
+- added block spawn functionality in it's current broken state (hence no playable build refresh)
+- tidied up what's included on the github page (found out why the gitignore was being... ignored)
+
+
+
+*VERSION HISTORY*
+
+Tetris'd (version 0.0004) 24/10/2013
 
 I completed a couple of tutorial video series' on Youtube for Unity and was going to submit the outcome of those:
 http://www.youtube.com/watch?v=mbm9lPB5GPw - Unity 3d: Simple First-Person Shooter Tutorial
@@ -22,7 +30,7 @@ I've only included a compiled build for the web version, but the latest version 
 https://dl.dropboxusercontent.com/u/11835841/Web.html
 
 The individual releases are public and available on a github page:
-https://github.com/westdnz/Tetrisd
+http://tinyllama.net
 
 Features I hope to add in the future are:
 - Proper Tetris brick types!
@@ -31,3 +39,5 @@ Features I hope to add in the future are:
 	with the music at about 30 seconds in.  Sadly time didn't allow me to get this in for submission.
 - High Score tracking with playername entry.
 - Speed increasing with score.
+
+
